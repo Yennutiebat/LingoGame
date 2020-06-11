@@ -22,6 +22,7 @@ public class Turn{
 
     public Turn(Long id, String guessedWord, int wordLength, LocalDateTime createdAt){
         this.id=id;
+        this.guessedWord = guessedWord;
         this.wordLength = wordLength;
         this.createdAt = createdAt;
     }

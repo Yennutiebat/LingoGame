@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @RestController
 @RequestMapping("/api/turn")
@@ -16,6 +17,9 @@ public class TurnController {
     private TurnService turnService;
     private TextDeserializer textDeserializer;
     private String randomwoord;
+    private int aantalfout = 0;
+    String stringCorrecteletters = "";
+
 
     public TurnController(TurnService turnService, TextDeserializer textDeserializer) {
         this.turnService = turnService;
@@ -23,18 +27,19 @@ public class TurnController {
     }
 
     @GetMapping
-    public List<Turn> findAll() {
-        return turnService.findAll();
+    public String findAll() throws FileNotFoundException {
+        aantalfout = 0;
+        stringCorrecteletters = "";
+        return returnRandomWord();
     }
 
-    public String returRandomWord() throws FileNotFoundException {
+    public String returnRandomWord() throws FileNotFoundException {
         List<String> lingowords = textDeserializer.deserialize("src/main/resources/basiswoorden-aangepast.txt");
-
         List<String> checkedWords = loopWords(lingowords);
-        randomwoord = checkedWords.get(0);
-        System.out.println(checkedWords.get(0)+"1");
-        System.out.println(randomwoord+"2");
-        return checkedWords.get(0);
+        int rnd = new Random().nextInt(checkedWords.size());
+        randomwoord = checkedWords.get(rnd);
+        System.out.println(randomwoord);
+        return randomwoord;
     }
 
     public List<String> loopWords(List<String> content) {
@@ -42,33 +47,54 @@ public class TurnController {
         for (int i = 0; i < content.size(); i++) {
             String data = content.get(i);
             checkedWords.add(data);
-            System.out.println(checkedWords.get(0)+"gechecked");
-
         }
-        System.out.println(checkedWords.get(0)+"gechecked");
-
         return checkedWords;
-
-
+    }
+    public void addToCorrectString(char letter){
+        if(!(stringCorrecteletters.length()>=(randomwoord.length()))) {//als stringcorrecteletters nog niet is gevuld vul hem dan in
+            stringCorrecteletters += letter;
+        }
     }
 
     @PostMapping(consumes = "application/json")
     public String guessWord(@RequestBody Turn turn) throws FileNotFoundException {
-        if (turn.guessedWord.equals(randomwoord)) {
-            returRandomWord();
-            return "goed geraden a niffauw";
+        if (aantalfout < 5) {
+            if (turn.guessedWord.equals(randomwoord)) {//als het in een keer goed is
+                aantalfout = 0;
+                String stringCorrecteletters = "";
+                returnRandomWord();
+            } else {//als het niet in een keer goed geraden is
+                String guessedWord = turn.guessedWord;
+                int correctLetters = 0;
+                int counter = 0;
+                for (char letter : randomwoord.toCharArray()) {
+                    if (letter == guessedWord.charAt(counter)) {//als de letters op de goede plek staan
+                        System.out.println(letter + " valid");
+                        addToCorrectString(letter);
+                        correctLetters++;
+                    } else if (letter != guessedWord.charAt(counter)) {//als de letters niet op de goede plek staan
+                        if ((randomwoord.indexOf(guessedWord.charAt(counter))) >= 0) {//als de letter een positie groter dan 0 heeft oftewel erin zit
+                            //check of het letter al geweest is
+                            addToCorrectString(letter);
+                            if ((stringCorrecteletters.indexOf(guessedWord.charAt(counter))) >= 0) {//als de letter al gekozen is
+                                System.out.println(guessedWord.charAt(counter) + " deze letter heb je al gehad maar is niet correct");// letter is al geweest maar niet correct
+                            } else {//als de letter nog niet al gekozen is
+                                System.out.println(guessedWord.charAt(counter) + " deze letter zit niet op de goede plek");
+                            }
+                            addToCorrectString('_');
+                        } else {
+                            System.out.println(guessedWord.charAt(counter) + " deze letter zit  er niet in");
+                            addToCorrectString('_');
+                        }
+                    }
+                    counter++;
+                }
+                aantalfout++;
+                System.out.println("aantal foute gokbeurten " + aantalfout);
+            }
+            return stringCorrecteletters;
         } else {
-            returRandomWord();
-            return "fout a niffauw " + turn.guessedWord;
+            return "game over ga naar: om een nieuwe game te starten";
         }
-    }/*
-    @PostMapping(consumes = "application/json")
-    public Long createNew(@RequestBody Turn turn) {
-        Turn newTurn = turnService.createNew(turn);
-        if (newTurn != null) {
-            return newTurn.id;
-        } else {
-            return null;
-        }
-    }*/
+    }
 }
