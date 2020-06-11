@@ -1,13 +1,14 @@
-package infrastructure;
+package bep.lingogame.service;
+
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-
+@Service
 public class TextDeserializer implements FileDeserializerInterface {
-
 
     @Override
     public List<String> deserialize(String file) throws FileNotFoundException {
