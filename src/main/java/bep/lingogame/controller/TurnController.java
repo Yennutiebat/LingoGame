@@ -20,6 +20,8 @@ public class TurnController {
     private int aantalfout = 0;
     String stringCorrecteletters = "";
     String aantalStreepjes;
+    int currentCharOccuranceInRandomWord = 0;
+    int currentCharOccuranceInGuessedWord = 0;
 
     public TurnController(TurnService turnService, TextDeserializer textDeserializer) {
         this.turnService = turnService;
@@ -30,26 +32,26 @@ public class TurnController {
     public String getRandomWord() throws FileNotFoundException {//geeft een random woord terug aan het get request met alleen de eerste letter zichtbaar
         aantalfout = 0;
         stringCorrecteletters = "";
-        aantalStreepjes="";
+        aantalStreepjes = "";
         returnRandomWord();
-        for(int i=0;i<randomwoord.length()-1;i++){
-            aantalStreepjes+=" _ ";
+        for (int i = 0; i < randomwoord.length() - 1; i++) {
+            aantalStreepjes += " _ ";
         }
-        String returnWaarde = randomwoord.substring(0,1)+aantalStreepjes+" "+randomwoord.length()+" tekens lang";
+        String returnWaarde = randomwoord.substring(0, 1) + aantalStreepjes + " " + randomwoord.length() + " tekens lang";
         System.out.println(returnWaarde);
         return returnWaarde;
     }
 
     public String returnRandomWord() throws FileNotFoundException {//geeft een random woord terug
         List<String> lingowords = textDeserializer.deserialize("src/main/resources/basiswoorden-aangepast.txt");
-        List<String> checkedWords = loopWords(lingowords);
+        List<String> checkedWords = loopTroughWords(lingowords);
         int rnd = new Random().nextInt(checkedWords.size());
         randomwoord = "baard"; //checkedWords.get(rnd);
         System.out.println(randomwoord);
         return "baard";
     }
 
-    public List<String> loopWords(List<String> content) {//looped door de woorden heen en stopt ze in een array
+    public List<String> loopTroughWords(List<String> content) {//looped door de woorden heen en stopt ze in een array
         List<String> checkedWords = new ArrayList<>();
         for (int i = 0; i < content.size(); i++) {
             String data = content.get(i);
@@ -57,14 +59,17 @@ public class TurnController {
         }
         return checkedWords;
     }
-    public void storeCorrectwords(char letter){
+
+    public void storeCorrectwords(char letter) {
         stringCorrecteletters += letter;
     }
 
-    public void checkLetters(String guessedWord){
+    public void checkGuessedLetters(String guessedWord) {
         int correctLetters = 0;
         int counter = 0;
-        stringCorrecteletters="";
+        stringCorrecteletters = "";
+        char currentChar = guessedWord.charAt(counter);//het karakter dat we nu checken
+
         try {
             for (char letter : randomwoord.toCharArray()) {
                 if (letter == guessedWord.charAt(counter)) {//als de letters op de goede plek staan
@@ -72,23 +77,39 @@ public class TurnController {
                     storeCorrectwords(letter);
                     correctLetters++;
                 } else if (letter != guessedWord.charAt(counter)) {//als de letters niet op de goede plek staan
-                    checkIncorrectLetters(counter, guessedWord);
+                    checkPresentOrAbsent(counter, guessedWord, currentChar);
                 }
                 counter++;
             }
-        }catch(StringIndexOutOfBoundsException e){
+        } catch (StringIndexOutOfBoundsException e) {
             System.out.println("Het gerade woord is niet de juiste lengte");
         }
     }
-    public void checkIncorrectLetters(int counter, String guessedWord) {
-        char currentChar = guessedWord.charAt(counter);//het karakter dat we nu checken
+
+    public void checkPresentOrAbsent(int counter, String guessedWord, char currentChar) {
+        checkOccurences(currentChar, guessedWord);
+        if ((randomwoord.indexOf(currentChar)) >= 0) {//als de letter een positie groter dan 0 heeft oftewel erin zit
+            //check of het letter al geweest is
+            if ((stringCorrecteletters.indexOf(currentChar)) >= 0) {//als de letter al gekozen is
+                System.out.println(currentChar + " present deze letter zit er zovaak in " + currentCharOccuranceInRandomWord);// letter is al geweest maar niet correct
+            } else {//als de letter nog niet al gekozen is
+                System.out.println(currentChar + " present deze letter zit niet op de goede plek");
+            }
+        } else {
+            System.out.println(currentChar + " absent deze letter zit  er niet in");
+        }
+        storeCorrectwords('_');
+    }
+
+
+    public void checkOccurences(char currentChar, String guessedWord) {
         int index = randomwoord.indexOf(currentChar);
         int index2 = randomwoord.indexOf(currentChar);
-        int currentCharOccuranceInRandomWord = 0;
-        int currentCharOccuranceInGuessedWord = 0;
+        int charactersLeft = currentCharOccuranceInRandomWord-currentCharOccuranceInGuessedWord;
 
+        currentCharOccuranceInRandomWord = 0;
+        currentCharOccuranceInGuessedWord = 0;
         if ((stringCorrecteletters.indexOf(currentChar)) >= 0) {//als de letter al gekozen is
-
             while (index >= 0) {//check hoevaak de letter voorkomt
                 index = randomwoord.indexOf(currentChar, index + 1);
                 currentCharOccuranceInRandomWord += 1;
@@ -97,22 +118,8 @@ public class TurnController {
                 index2 = guessedWord.indexOf(currentChar, index2 + 1);
                 currentCharOccuranceInGuessedWord += 1;
             }
-
-            if ((randomwoord.indexOf(currentChar)) >= 0) {//als de letter een positie groter dan 0 heeft oftewel erin zit
-                //check of het letter al geweest is
-                if ((stringCorrecteletters.indexOf(currentChar)) >= 0) {//als de letter al gekozen is
-                    System.out.println(currentChar + " present deze letter zit er zovaak in " + currentCharOccuranceInRandomWord);// letter is al geweest maar niet correct
-                } else {//als de letter nog niet al gekozen is
-                    System.out.println(currentChar + " present deze letter zit niet op de goede plek");
-                }
-            } else {
-                System.out.println(currentChar + " absent deze letter zit  er niet in");
-            }
-            storeCorrectwords('_');
         }
     }
-
-
 
     @PostMapping(consumes = "application/json")
     public String guessWord(@RequestBody Turn turn) throws FileNotFoundException {
@@ -124,13 +131,13 @@ public class TurnController {
                 return getRandomWord();
             } else {//als het niet in een keer goed geraden is
                 String guessedWord = turn.guessedWord;
-                checkLetters(guessedWord);
+                checkGuessedLetters(guessedWord);
                 aantalfout++;
                 System.out.println("aantal foute gokbeurten " + aantalfout);
             }
-            System.out.println(stringCorrecteletters+" je gok");
-            return stringCorrecteletters+" deze letters heb je goed";
-        } else{
+            System.out.println(stringCorrecteletters + " je gok");
+            return stringCorrecteletters + " deze letters heb je goed";
+        } else {
             return "game over ga naar: om een nieuwe game te starten";
         }
     }
