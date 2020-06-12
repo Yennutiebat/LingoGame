@@ -29,11 +29,4 @@ public class TurnService {
         turnRepository.save(turn);
         return turn;
     }
-    /*public Turn createNew(Turn turnRestRequest) {
-        Turn turn = new Turn(null, turnRestRequest.guessedWord, turnRestRequest.wordLength=turnRestRequest.guessedWord.length(), LocalDateTime.now());
-
-        turnRepository.save(turn);
-        return turn;
-    }*/
-
 }
