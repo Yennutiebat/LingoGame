@@ -13,17 +13,17 @@ public class Turn{
     @GeneratedValue
     public Long id;
     public String guessedWord;
-    public int wordLength;
+    public int aantalFout;
     @CreationTimestamp
     public LocalDateTime createdAt;
 
     public Turn(){
     }
 
-    public Turn(Long id, String guessedWord, int wordLength, LocalDateTime createdAt){
+    public Turn(Long id, String guessedWord, int aantalFout, LocalDateTime createdAt){
         this.id=id;
         this.guessedWord = guessedWord;
-        this.wordLength = wordLength;
+        this.aantalFout = aantalFout;
         this.createdAt = createdAt;
     }
 }

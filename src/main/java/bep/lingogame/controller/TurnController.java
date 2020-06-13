@@ -1,6 +1,7 @@
 package bep.lingogame.controller;
 
 
+import bep.lingogame.domain.Feedback;
 import bep.lingogame.domain.Turn;
 import bep.lingogame.service.TextDeserializer;
 import bep.lingogame.service.TurnService;
@@ -68,12 +69,12 @@ public class TurnController {
         int correctLetters = 0;
         int counter = 0;
         stringCorrecteletters = "";
-        char currentChar = guessedWord.charAt(counter);//het karakter dat we nu checken
-
         try {
             for (char letter : randomwoord.toCharArray()) {
+                char currentChar = guessedWord.charAt(counter);//het karakter dat we nu checken
                 if (letter == guessedWord.charAt(counter)) {//als de letters op de goede plek staan
-                    System.out.println(letter + " valid");
+                    System.out.println(letter +" "+ Feedback.correct);
+                    //currentCharOccuranceInGuessedWord;
                     storeCorrectwords(letter);
                     correctLetters++;
                 } else if (letter != guessedWord.charAt(counter)) {//als de letters niet op de goede plek staan
@@ -91,12 +92,12 @@ public class TurnController {
         if ((randomwoord.indexOf(currentChar)) >= 0) {//als de letter een positie groter dan 0 heeft oftewel erin zit
             //check of het letter al geweest is
             if ((stringCorrecteletters.indexOf(currentChar)) >= 0) {//als de letter al gekozen is
-                System.out.println(currentChar + " present deze letter zit er zovaak in " + currentCharOccuranceInRandomWord);// letter is al geweest maar niet correct
+                System.out.println(currentChar +" "+ Feedback.present+" deze letter zit er zovaak in " + currentCharOccuranceInRandomWord);// letter is al geweest maar niet correct
             } else {//als de letter nog niet al gekozen is
-                System.out.println(currentChar + " present deze letter zit niet op de goede plek");
+                System.out.println(currentChar + " "+ Feedback.present+" deze letter zit niet op de goede plek");
             }
         } else {
-            System.out.println(currentChar + " absent deze letter zit  er niet in");
+            System.out.println(currentChar + " "+Feedback.absent+" deze letter zit  er niet in");
         }
         storeCorrectwords('_');
     }
@@ -106,7 +107,6 @@ public class TurnController {
         int index = randomwoord.indexOf(currentChar);
         int index2 = randomwoord.indexOf(currentChar);
         int charactersLeft = currentCharOccuranceInRandomWord-currentCharOccuranceInGuessedWord;
-
         currentCharOccuranceInRandomWord = 0;
         currentCharOccuranceInGuessedWord = 0;
         if ((stringCorrecteletters.indexOf(currentChar)) >= 0) {//als de letter al gekozen is

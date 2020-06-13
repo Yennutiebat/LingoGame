@@ -24,7 +24,7 @@ public class TurnService {
     }
 
     public Turn createNew(Turn turnRestRequest) {
-        Turn turn = new Turn(null, turnRestRequest.guessedWord, turnRestRequest.wordLength, LocalDateTime.now());
+        Turn turn = new Turn(null, turnRestRequest.guessedWord, turnRestRequest.aantalFout, LocalDateTime.now());
 
         turnRepository.save(turn);
         return turn;
