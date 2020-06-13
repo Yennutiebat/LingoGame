@@ -13,10 +13,10 @@ import java.io.FileNotFoundException;
 public class TurnController {
     private TurnService turnService;
     private WordService wordService;
-    private String randomwoord;
-    private int aantalfout = 0;
+    private String randomword;
+    private int wrongGuesses = 0;
     private String stringCorrectChars;
-    private String aantalStreepjes;
+    private String numberOfLines;
     int currentCharOccuranceInRandomWord = 0;
 
     public TurnController(TurnService turnService, WordService wordService) {
@@ -26,31 +26,28 @@ public class TurnController {
 
     @GetMapping
     public String getRandomWord() throws FileNotFoundException {//geeft een random woord terug aan het get request met alleen de eerste letter zichtbaar
-        aantalfout = 0;
+        wrongGuesses = 0;
         stringCorrectChars = "";
-        aantalStreepjes = "";
-        randomwoord=wordService.returnRandomWord();
-        for (int i = 0; i < randomwoord.length() - 1; i++) {
-            aantalStreepjes += " _ ";
-        }
-        String returnWaarde = randomwoord.substring(0, 1) + aantalStreepjes + " " + randomwoord.length() + " tekens lang";
-        System.out.println(returnWaarde);
-        return returnWaarde;
+        numberOfLines = "";
+        randomword = wordService.returnRandomWord();
+        String firstLetter = wordService.ReturnFirstLetter(numberOfLines);
+        System.out.println(numberOfLines);
+        return firstLetter;
     }
 
     @PostMapping(consumes = "application/json")
     public String guessWord(@RequestBody Turn turn) throws FileNotFoundException {
-        if (aantalfout < 5) {
-            if (turn.guessedWord.equals(randomwoord)) {//als het in een keer goed is
-                aantalfout = 0;
+        if (wrongGuesses < 5) {
+            if (turn.guessedWord.equals(randomword)) {//als het in een keer goed is
+                wrongGuesses = 0;
                 String stringCorrectChars = "";
                 System.out.println("goed geraden");
                 return getRandomWord();
             } else {//als het niet in een keer goed geraden is
                 String guessedWord = turn.guessedWord;
-                stringCorrectChars=turnService.checkGuessedChars(guessedWord,stringCorrectChars,randomwoord,currentCharOccuranceInRandomWord);
-                aantalfout++;
-                System.out.println("aantal foute gokbeurten " + aantalfout);
+                stringCorrectChars=turnService.checkGuessedChars(guessedWord,stringCorrectChars, randomword,currentCharOccuranceInRandomWord);
+                wrongGuesses++;
+                System.out.println("aantal foute gokbeurten " + wrongGuesses);
             }
             System.out.println(stringCorrectChars + " je gok");
             return stringCorrectChars + " deze letters heb je goed";

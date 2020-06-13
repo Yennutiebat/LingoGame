@@ -10,10 +10,10 @@
     </parent>
     <groupId>bep</groupId>
     <artifactId>lingogame</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>lingogame</name>
-    <description>Lingo game for bep project</description>
+    <name>LingoGame</name>
+    <description>LingoGame for bep project</description>
     <distributionManagement>
         <repository>
             <id>github</id>

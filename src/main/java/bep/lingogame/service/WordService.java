@@ -14,6 +14,7 @@ import java.util.Random;
 public class WordService {
     private WordRepository wordRepository;
     private TextDeserializer textDeserializer;
+    private String randomWord;
 
     public WordService(WordRepository wordRepository, TextDeserializer textDeserializer) {
         this.wordRepository = wordRepository;
@@ -31,9 +32,26 @@ public class WordService {
 
     public Word createNew(Word wordRestRequest) {
         Word word = new Word(null, wordRestRequest.guessedWord, LocalDateTime.now());
-
         wordRepository.save(word);
         return word;
+    }
+
+    public String ReturnFirstLetter(String numberOfLines) {
+        for (int i = 0; i < randomWord.length() - 1; i++) {
+            numberOfLines += " _ ";
+        }
+        String returnWaarde = randomWord.substring(0, 1) + numberOfLines + " " + randomWord.length() + " tekens lang";
+        System.out.println(returnWaarde+" randomWord "+randomWord);
+        return returnWaarde;
+    }
+
+    public String returnRandomWord() throws FileNotFoundException {//geeft een random woord terug
+        List<String> lingowords = textDeserializer.deserialize("src/main/resources/basiswoorden-aangepast.txt");
+        List<String> checkedWords = loopTroughWords(lingowords);
+        int rnd = new Random().nextInt(checkedWords.size());
+        randomWord = checkedWords.get(rnd);
+        System.out.println(randomWord+" random ");
+        return randomWord;
     }
 
     public List<String> loopTroughWords(List<String> content) {//looped door de woorden heen en stopt ze in een array
@@ -45,12 +63,5 @@ public class WordService {
         return checkedWords;
     }
 
-    public String returnRandomWord() throws FileNotFoundException {//geeft een random woord terug
-        List<String> lingowords = textDeserializer.deserialize("src/main/resources/basiswoorden-aangepast.txt");
-        List<String> checkedWords = loopTroughWords(lingowords);
-        int rnd = new Random().nextInt(checkedWords.size());
-        String randomwoord = checkedWords.get(rnd);
-        System.out.println(randomwoord);
-        return randomwoord;
-    }
+
 }
