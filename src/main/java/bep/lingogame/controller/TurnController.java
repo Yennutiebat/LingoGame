@@ -8,9 +8,6 @@ import bep.lingogame.service.TurnService;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 @RestController
 @RequestMapping("/api/turn")
@@ -34,35 +31,13 @@ public class TurnController {
         aantalfout = 0;
         stringCorrecteletters = "";
         aantalStreepjes = "";
-        returnRandomWord();
+        randomwoord=turnService.returnRandomWord();
         for (int i = 0; i < randomwoord.length() - 1; i++) {
             aantalStreepjes += " _ ";
         }
         String returnWaarde = randomwoord.substring(0, 1) + aantalStreepjes + " " + randomwoord.length() + " tekens lang";
         System.out.println(returnWaarde);
         return returnWaarde;
-    }
-
-    public String returnRandomWord() throws FileNotFoundException {//geeft een random woord terug
-        List<String> lingowords = textDeserializer.deserialize("src/main/resources/basiswoorden-aangepast.txt");
-        List<String> checkedWords = loopTroughWords(lingowords);
-        int rnd = new Random().nextInt(checkedWords.size());
-        randomwoord = "baard"; //checkedWords.get(rnd);
-        System.out.println(randomwoord);
-        return "baard";
-    }
-
-    public List<String> loopTroughWords(List<String> content) {//looped door de woorden heen en stopt ze in een array
-        List<String> checkedWords = new ArrayList<>();
-        for (int i = 0; i < content.size(); i++) {
-            String data = content.get(i);
-            checkedWords.add(data);
-        }
-        return checkedWords;
-    }
-
-    public void storeCorrectwords(char letter) {
-        stringCorrecteletters += letter;
     }
 
     public void checkGuessedLetters(String guessedWord) {
@@ -74,8 +49,7 @@ public class TurnController {
                 char currentChar = guessedWord.charAt(counter);//het karakter dat we nu checken
                 if (letter == guessedWord.charAt(counter)) {//als de letters op de goede plek staan
                     System.out.println(letter +" "+ Feedback.correct);
-                    //currentCharOccuranceInGuessedWord;
-                    storeCorrectwords(letter);
+                    stringCorrecteletters += letter;
                     correctLetters++;
                 } else if (letter != guessedWord.charAt(counter)) {//als de letters niet op de goede plek staan
                     checkPresentOrAbsent(counter, guessedWord, currentChar);
@@ -99,7 +73,7 @@ public class TurnController {
         } else {
             System.out.println(currentChar + " "+Feedback.absent+" deze letter zit  er niet in");
         }
-        storeCorrectwords('_');
+        stringCorrecteletters += '_';
     }
 
 
