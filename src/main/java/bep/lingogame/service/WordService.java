@@ -4,15 +4,21 @@ import bep.lingogame.domain.Word;
 import bep.lingogame.repository.WordRepository;
 import org.springframework.stereotype.Service;
 
+import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class WordService {
     private WordRepository wordRepository;
+    private TextDeserializer textDeserializer;
 
-    public WordService(WordRepository wordRepository) {
+    public WordService(WordRepository wordRepository, TextDeserializer textDeserializer) {
         this.wordRepository = wordRepository;
+        this.textDeserializer = textDeserializer;
+
     }
 
     public List<Word> findAll() {
@@ -24,9 +30,27 @@ public class WordService {
     }
 
     public Word createNew(Word wordRestRequest) {
-        Word word = new Word(null, wordRestRequest.guessedWord, wordRestRequest.wordLength, LocalDateTime.now());
+        Word word = new Word(null, wordRestRequest.guessedWord, LocalDateTime.now());
 
         wordRepository.save(word);
         return word;
+    }
+
+    public List<String> loopTroughWords(List<String> content) {//looped door de woorden heen en stopt ze in een array
+        List<String> checkedWords = new ArrayList<>();
+        for (int i = 0; i < content.size(); i++) {
+            String data = content.get(i);
+            checkedWords.add(data);
+        }
+        return checkedWords;
+    }
+
+    public String returnRandomWord() throws FileNotFoundException {//geeft een random woord terug
+        List<String> lingowords = textDeserializer.deserialize("src/main/resources/basiswoorden-aangepast.txt");
+        List<String> checkedWords = loopTroughWords(lingowords);
+        int rnd = new Random().nextInt(checkedWords.size());
+        String randomwoord = checkedWords.get(rnd);
+        System.out.println(randomwoord);
+        return randomwoord;
     }
 }

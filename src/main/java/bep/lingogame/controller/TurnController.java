@@ -4,6 +4,7 @@ package bep.lingogame.controller;
 import bep.lingogame.domain.Turn;
 import bep.lingogame.service.TextDeserializer;
 import bep.lingogame.service.TurnService;
+import bep.lingogame.service.WordService;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.FileNotFoundException;
@@ -12,6 +13,7 @@ import java.io.FileNotFoundException;
 @RequestMapping("/api/turn")
 public class TurnController {
     private TurnService turnService;
+    private WordService wordService;
     private TextDeserializer textDeserializer;
     private String randomwoord;
     private int aantalfout = 0;
@@ -19,9 +21,9 @@ public class TurnController {
     private String aantalStreepjes;
     int currentCharOccuranceInRandomWord = 0;
 
-    public TurnController(TurnService turnService, TextDeserializer textDeserializer) {
+    public TurnController(TurnService turnService, WordService wordService) {
         this.turnService = turnService;
-        this.textDeserializer = textDeserializer;
+        this.wordService = wordService;
     }
 
     @GetMapping
@@ -29,7 +31,7 @@ public class TurnController {
         aantalfout = 0;
         stringCorrectChars = "";
         aantalStreepjes = "";
-        randomwoord=turnService.returnRandomWord();
+        randomwoord=wordService.returnRandomWord();
         for (int i = 0; i < randomwoord.length() - 1; i++) {
             aantalStreepjes += " _ ";
         }

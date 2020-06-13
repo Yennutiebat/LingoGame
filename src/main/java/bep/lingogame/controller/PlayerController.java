@@ -1,10 +1,8 @@
 package bep.lingogame.controller;
 
-
 import bep.lingogame.domain.Player;
 import bep.lingogame.service.PlayerService;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -23,9 +21,9 @@ public class PlayerController {
 
     @PostMapping(consumes = "application/json")
     public Long createNew(@RequestBody Player player) {
-        Player newplayer = playerService.createNew(player);
-        if (newplayer != null){
-            return newplayer.id;
+        Player newPlayer = playerService.createNew(player);
+        if (newPlayer != null){
+            return newPlayer.id;
         }else{
             return null;
         }

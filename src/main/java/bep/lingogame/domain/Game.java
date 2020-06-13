@@ -13,6 +13,7 @@ public class Game{
     @Id
     @GeneratedValue
     public Long id;
+    public String state;
     @OneToOne
     Player player;
     @CreationTimestamp
@@ -20,9 +21,21 @@ public class Game{
 
     public Game(){
     }
-
-    public Game(Long id, LocalDateTime createdAt){
+    public Game(Long id,String state, LocalDateTime createdAt){
         this.id=id;
+        this.state=state;
         this.createdAt = createdAt;
+    }
+    public Player getPlayer() {
+        return player;
+    }
+    public String getState() {
+        return state;
+    }
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+    public void setState(String state) {
+        this.state = state;
     }
 }
