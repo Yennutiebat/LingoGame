@@ -2,7 +2,6 @@ package bep.lingogame.controller;
 
 
 import bep.lingogame.domain.Turn;
-import bep.lingogame.service.TextDeserializer;
 import bep.lingogame.service.TurnService;
 import bep.lingogame.service.WordService;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +13,6 @@ import java.io.FileNotFoundException;
 public class TurnController {
     private TurnService turnService;
     private WordService wordService;
-    private TextDeserializer textDeserializer;
     private String randomwoord;
     private int aantalfout = 0;
     private String stringCorrectChars;
@@ -39,7 +37,6 @@ public class TurnController {
         System.out.println(returnWaarde);
         return returnWaarde;
     }
-
 
     @PostMapping(consumes = "application/json")
     public String guessWord(@RequestBody Turn turn) throws FileNotFoundException {

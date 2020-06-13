@@ -11,11 +11,20 @@
     <groupId>bep</groupId>
     <artifactId>lingogame</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
     <name>lingogame</name>
     <description>Lingo game for bep project</description>
-
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Yennutiebat Apache Maven Packages</name>
+            <url>${env.DISTRIBUTION_URL_LINGOGAME}</url>
+        </repository>
+    </distributionManagement>
     <properties>
         <java.version>1.8</java.version>
+        <start-class>bep.lingowords.LingogameApplication</start-class>
+        <!--<config-class>bep.lingogame.AppConfig</config-class>-->
     </properties>
 
     <dependencies>
@@ -27,7 +36,16 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
@@ -71,6 +89,63 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.pitest</groupId>
+                <artifactId>pitest-maven</artifactId>
+                <version>1.5.0</version>
+                <configuration>
+                    <timestampedReports>false</timestampedReports>
+                    <mutationThreshold>50</mutationThreshold>
+                    <excludedClasses>
+                        <param>${start-class}</param>
+                        <!--<param>${config-class}</param>-->
+                    </excludedClasses>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.pitest</groupId>
+                        <artifactId>pitest-junit5-plugin</artifactId>
+                        <version>0.12</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.5</version>
+                <executions>
+                    <execution>
+                        <id>pre-unit-test</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>post-unit-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <rules>
+                        <rule>
+                            <element>CLASS</element>
+                            <limits>
+                                <limit>
+                                    <counter>BRANCH</counter>
+                                    <value>COVEREDRATIO</value>
+                                    <minimum>0%</minimum>
+                                </limit>
+                            </limits>
+                        </rule>
+                    </rules>
+                    <excludes>
+                        <!--<exclude>**/*AppConfig.*</exclude>-->
+                    </excludes>
+                </configuration>
             </plugin>
         </plugins>
     </build>
