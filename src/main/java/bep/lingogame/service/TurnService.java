@@ -5,23 +5,23 @@ import bep.lingogame.domain.Turn;
 import bep.lingogame.repository.TurnRepository;
 import org.springframework.stereotype.Service;
 
+import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class TurnService {
     private TurnRepository turnRepository;
+    private WordService wordService;
+    public int mistakes = 0;
 
-    public TurnService(TurnRepository turnRepository) {
+    public TurnService(TurnRepository turnRepository, WordService wordService) {
         this.turnRepository = turnRepository;
+        this.wordService = wordService;
     }
 
     public List<Turn> findAll() {
         return turnRepository.findAll();
-    }
-
-    public void findById(Long id) {
-        turnRepository.findById(id);
     }
 
     public Turn createNew(Turn turnRestRequest) {
@@ -31,32 +31,52 @@ public class TurnService {
         return turn;
     }
 
-
-
-    public String checkGuessedChars(String guessedWord, String stringCorrecteChars, String randomwoord, int currentCharOccuranceInRandomWord) {
-        int correctChars = 0;
-        int counter = 0;
-        stringCorrecteChars = "";
-        try {
-            for (char letter : randomwoord.toCharArray()) {
-                char currentChar = guessedWord.charAt(counter);//het karakter dat we nu checken
-                if (letter == guessedWord.charAt(counter)) {//als de letters op de goede plek staan
-                    System.out.println(letter + " " + Feedback.correct);
-                    stringCorrecteChars += letter;
-                    correctChars++;
-                } else if (letter != guessedWord.charAt(counter)) {//als de letters niet op de goede plek staan
-                    stringCorrecteChars= checkCharPresentOrAbsent(counter, guessedWord, currentChar, stringCorrecteChars, randomwoord, currentCharOccuranceInRandomWord);
-                }
-                counter++;
+    public String correctGuessedChars(Turn turn,String randomword,String correctGuessedChars,String numberOfLines) throws FileNotFoundException {
+        if (mistakes < 5) {
+            if (turn.guessedWord.equals(randomword)) {//als het in een keer goed is
+                mistakes = 0;
+                correctGuessedChars = "";
+                System.out.println("goed geraden");
+                randomword = wordService.returnRandomWord();
+                String firstLetter = wordService.ReturnFirstChar(numberOfLines);
+                return firstLetter;
+            } else {//als het niet in een keer goed geraden is
+                String guessedWord = turn.guessedWord;
+                correctGuessedChars = checkGuessedChars(guessedWord, randomword);
+                mistakes++;
+                System.out.println("aantal foute gokbeurten " + mistakes);
             }
-        } catch (StringIndexOutOfBoundsException e) {
-            System.out.println("Het gerade woord is niet de juiste lengte");
+            System.out.println(correctGuessedChars + " je gok");
+            return correctGuessedChars + " deze letters heb je goed";
+        } else {
+            return "game over ga naar: om een nieuwe game te starten";
         }
+    }
+
+    public String checkGuessedChars(String guessedWord, String randomwoord) {
+        int counter = 0;
+        String stringCorrecteChars = "";
+        System.out.println(stringCorrecteChars);
+
+        if (randomwoord.length() != guessedWord.length()) {
+            System.out.println("Het gerade woord is niet de juiste lengte");
+        } else {
+                for (char letter : randomwoord.toCharArray()) {
+                    char currentChar = guessedWord.charAt(counter);//het karakter dat we nu checken
+                    if (letter == guessedWord.charAt(counter)) {//als de letters op de goede plek staan
+                        System.out.println(letter + " " + Feedback.correct);
+                        stringCorrecteChars += letter;
+                    } else if (letter != guessedWord.charAt(counter)) {//als de letters niet op de goede plek staan
+                        stringCorrecteChars = checkCharPresentOrAbsent(currentChar, stringCorrecteChars, randomwoord);
+                    }
+                    counter++;
+                }
+            }
         return stringCorrecteChars;
     }
 
-    public String checkCharPresentOrAbsent(int counter, String guessedWord, char currentChar, String stringCorrectChars, String randomwoord, int currentCharOccuranceInRandomWord) {
-        currentCharOccuranceInRandomWord= checkCharOccurencesInRandomWord(currentChar, guessedWord, stringCorrectChars, randomwoord, currentCharOccuranceInRandomWord);
+    public String checkCharPresentOrAbsent(char currentChar, String stringCorrectChars, String randomwoord) {
+        int currentCharOccuranceInRandomWord = checkCharOccurencesInRandomWord(currentChar, stringCorrectChars, randomwoord);
         if ((randomwoord.indexOf(currentChar)) >= 0) {//als de letter een positie groter dan 0 heeft oftewel erin zit
             //check of het letter al geweest is
             if ((stringCorrectChars.indexOf(currentChar)) >= 0) {//als de letter al gekozen is
@@ -71,9 +91,9 @@ public class TurnService {
         return stringCorrectChars;
     }
 
-    public int checkCharOccurencesInRandomWord(char currentChar, String guessedWord, String stringCorrectChars, String randomwoord, int currentCharOccuranceInRandomWord) {
+    public int checkCharOccurencesInRandomWord(char currentChar, String stringCorrectChars, String randomwoord) {
         int index = randomwoord.indexOf(currentChar);
-        currentCharOccuranceInRandomWord = 0;
+        int currentCharOccuranceInRandomWord = 0;
         if ((stringCorrectChars.indexOf(currentChar)) >= 0) {//als de letter al gekozen is
             while (index >= 0) {//check hoevaak de letter voorkomt
                 index = randomwoord.indexOf(currentChar, index + 1);

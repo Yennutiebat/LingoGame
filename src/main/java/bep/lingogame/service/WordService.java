@@ -36,7 +36,7 @@ public class WordService {
         return word;
     }
 
-    public String ReturnFirstLetter(String numberOfLines) {
+    public String ReturnFirstChar(String numberOfLines) {
         for (int i = 0; i < randomWord.length() - 1; i++) {
             numberOfLines += " _ ";
         }
@@ -49,7 +49,7 @@ public class WordService {
         List<String> lingowords = textDeserializer.deserialize("src/main/resources/basiswoorden-aangepast.txt");
         List<String> checkedWords = loopTroughWords(lingowords);
         int rnd = new Random().nextInt(checkedWords.size());
-        randomWord = checkedWords.get(rnd);
+        randomWord = "baard";//checkedWords.get(rnd);
         System.out.println(randomWord+" random ");
         return randomWord;
     }

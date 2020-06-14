@@ -24,7 +24,9 @@
     <properties>
         <java.version>1.8</java.version>
         <start-class>bep.lingowords.LingogameApplication</start-class>
-        <!--<config-class>bep.lingogame.AppConfig</config-class>-->
+        <sonar.projectKey>Yennutiebat_LingoGame</sonar.projectKey>
+        <sonar.organization>yennutiebat</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
 
     <dependencies>
@@ -61,6 +63,11 @@
                     <artifactId>junit-vintage-engine</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -99,7 +106,6 @@
                     <mutationThreshold>50</mutationThreshold>
                     <excludedClasses>
                         <param>${start-class}</param>
-                        <!--<param>${config-class}</param>-->
                     </excludedClasses>
                 </configuration>
                 <dependencies>
@@ -146,6 +152,11 @@
                         <!--<exclude>**/*AppConfig.*</exclude>-->
                     </excludes>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.7.0.1746</version>
             </plugin>
         </plugins>
     </build>
