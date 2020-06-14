@@ -13,8 +13,11 @@ public class Turn{
     @Id
     @GeneratedValue
     public Long id;
+    public String randomWord;
     public String guessedWord;
+    public TotalFeedback totalFeedback;
     public int mistakes;
+    public int score;
     @ManyToOne
     private Game game;
     @CreationTimestamp
@@ -23,29 +26,14 @@ public class Turn{
     public Turn(){
     }
 
-    public Turn(Long id, String guessedWord, int mistakes,Game game, LocalDateTime createdAt){
+    public Turn(Long id,String randomWord, String guessedWord,TotalFeedback totalFeedback, int mistakes,int score, Game game, LocalDateTime createdAt){
         this.id=id;
+        this.randomWord = randomWord;
         this.guessedWord = guessedWord;
+        this.totalFeedback = totalFeedback;
         this.mistakes = mistakes;
+        this.score = score;
         this.createdAt = createdAt;
         this.game = game;
     }
-    public String getGuessedWord() {
-        return guessedWord;
-    }
-
-    public int getMistakes() {
-        return mistakes;
-    }
-
-
-    public void setGuessedWord(String guessedWord) {
-        this.guessedWord = guessedWord;
-    }
-
-    public void setMistakes(int mistakes) {
-        this.mistakes = mistakes;
-    }
-
-
 }

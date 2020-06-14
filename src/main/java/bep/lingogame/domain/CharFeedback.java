@@ -1,6 +1,6 @@
 package bep.lingogame.domain;
 
-public enum Feedback {
+public enum CharFeedback {
     correct,
     present,
     absent
