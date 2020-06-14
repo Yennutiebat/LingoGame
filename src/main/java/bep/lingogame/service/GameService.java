@@ -1,6 +1,7 @@
 package bep.lingogame.service;
 
 import bep.lingogame.domain.Game;
+import bep.lingogame.domain.Player;
 import bep.lingogame.repository.GameRepository;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +20,13 @@ public class GameService {
         return gameRepository.findAll();
     }
 
-    public Game createNew(Game gameRestRequest) {
-        Game game = new Game(null,gameRestRequest.state, LocalDateTime.now());
+    public Game findById(Long id) {
+        return gameRepository.findById(id);
+    }
 
+
+    public Game createNew(Player player) {
+        Game game = new Game(null,"in progress", player, LocalDateTime.now());
         gameRepository.save(game);
         return game;
     }

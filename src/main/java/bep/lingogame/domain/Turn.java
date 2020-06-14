@@ -16,18 +16,19 @@ public class Turn{
     public String guessedWord;
     public int mistakes;
     @ManyToOne
-    Game game;
+    private Game game;
     @CreationTimestamp
     public LocalDateTime createdAt;
 
     public Turn(){
     }
 
-    public Turn(Long id, String guessedWord, int mistakes, LocalDateTime createdAt){
+    public Turn(Long id, String guessedWord, int mistakes,Game game, LocalDateTime createdAt){
         this.id=id;
         this.guessedWord = guessedWord;
         this.mistakes = mistakes;
         this.createdAt = createdAt;
+        this.game = game;
     }
     public String getGuessedWord() {
         return guessedWord;
@@ -37,9 +38,7 @@ public class Turn{
         return mistakes;
     }
 
-    public Game getGame() {
-        return game;
-    }
+
     public void setGuessedWord(String guessedWord) {
         this.guessedWord = guessedWord;
     }
@@ -48,7 +47,5 @@ public class Turn{
         this.mistakes = mistakes;
     }
 
-    public void setGame(Game game) {
-        this.game = game;
-    }
+
 }

@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface TurnRepository extends Repository<Turn, Long> {
     List<Turn> findAll();
-    void findById(Long id);
+    Turn findById(Long id);
 
     void save(Turn Word);
 }

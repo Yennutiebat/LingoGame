@@ -1,6 +1,8 @@
-package bep.lingogame.service;
+/*package bep.lingogame.service;
 
+import bep.lingogame.controller.PlayerController;
 import bep.lingogame.domain.Feedback;
+import bep.lingogame.domain.Game;
 import bep.lingogame.domain.Turn;
 import bep.lingogame.repository.TurnRepository;
 import org.springframework.stereotype.Service;
@@ -9,25 +11,29 @@ import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Service
+@Service*//*
 public class TurnService {
     private TurnRepository turnRepository;
     private WordService wordService;
-    public int mistakes = 0;
-    Feedback feedback;
+    private GameService gameService;
+    private PlayerController playerController;
 
-    public TurnService(TurnRepository turnRepository, WordService wordService) {
+    public int mistakes = 0;
+    Game game = gameService.findById(playerController.GameId());
+
+    public TurnService(TurnRepository turnRepository, WordService wordService,GameService gameService, PlayerController playerController) {
         this.turnRepository = turnRepository;
         this.wordService = wordService;
+        this.gameService = gameService;
+        this.playerController = playerController;
     }
 
     public List<Turn> findAll() {
         return turnRepository.findAll();
     }
 
-    public Turn createNew() {
-        Turn turn = new Turn(null, "guess", 1, null , LocalDateTime.now());
-
+    public Turn createNew(Game game) {
+        Turn turn = new Turn(null, "guess", 0,game, LocalDateTime.now());
         turnRepository.save(turn);
         return turn;
     }
@@ -65,16 +71,14 @@ public class TurnService {
             for (char letter : randomwoord.toCharArray()) {
                 char currentChar = guessedWord.charAt(counter);//het karakter dat we nu checken
                 if (letter == guessedWord.charAt(counter)) {//als de letters op de goede plek staan
-                    feedback = Feedback.correct;
-                    System.out.println(letter + " " + feedback);
+                    System.out.println(letter + " " + Feedback.correct);
+                    createNew(game);
                     stringCorrecteChars += letter;
-                }
-                else if (letter != guessedWord.charAt(counter)) {//als de letters niet op de goede plek staan
+                } else if (letter != guessedWord.charAt(counter)) {//als de letters niet op de goede plek staan
                     stringCorrecteChars = checkCharPresentOrAbsent(currentChar, stringCorrecteChars, randomwoord);
                 }
                 counter++;
             }
-            createNew();
         }
         return stringCorrecteChars;
     }
@@ -84,15 +88,15 @@ public class TurnService {
         if ((randomwoord.indexOf(currentChar)) >= 0) {//als de letter een positie groter dan 0 heeft oftewel erin zit
             //check of het letter al geweest is
             if ((stringCorrectChars.indexOf(currentChar)) >= 0) {//als de letter al gekozen is
-                feedback = Feedback.present;
-                System.out.println(currentChar + " " + feedback + " deze letter zit er zovaak in " + currentCharOccuranceInRandomWord);// letter is al geweest maar niet correct
+                System.out.println(currentChar + " " + Feedback.present + " deze letter zit er zovaak in " + currentCharOccuranceInRandomWord);// letter is al geweest maar niet correct
+                createNew(game);
             } else {//als de letter nog niet al gekozen is
-                feedback = Feedback.present;
-                System.out.println(currentChar + " " + feedback + " deze letter zit niet op de goede plek");
+                System.out.println(currentChar + " " + Feedback.present + " deze letter zit niet op de goede plek");
+                createNew(game);
             }
         } else {
-            feedback = Feedback.absent;
-            System.out.println(currentChar + " " + feedback + " deze letter zit  er niet in");
+            System.out.println(currentChar + " " + Feedback.absent + " deze letter zit  er niet in");
+            createNew(game);
         }
         stringCorrectChars += '_';
         return stringCorrectChars;
@@ -110,4 +114,4 @@ public class TurnService {
         return currentCharOccuranceInRandomWord;
     }
 
-}
+}*/

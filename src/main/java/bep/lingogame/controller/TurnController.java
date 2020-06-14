@@ -16,10 +16,12 @@ public class TurnController {
     private String randomword;
     private String correctGuessedChars;
     private String numberOfLines;
+    private String guess;
 
     public TurnController(TurnService turnService, WordService wordService) {
         this.turnService = turnService;
         this.wordService = wordService;
+
     }
 
     @GetMapping
@@ -35,7 +37,7 @@ public class TurnController {
 
     @PostMapping(consumes = "application/json")
     public String guessWord(@RequestBody Turn turn) throws FileNotFoundException {
-        String guess =turnService.correctGuessedChars(turn,randomword,correctGuessedChars,numberOfLines);
+        guess =turnService.correctGuessedChars(turn,randomword,correctGuessedChars,numberOfLines); //String guess =turnService.correctGuessedChars(turn,randomword,correctGuessedChars,numberOfLines);
         return guess;
     }
 }

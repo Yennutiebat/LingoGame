@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface WordRepository extends Repository<Word, Long> {
     List<Word> findAll();
-    void findById(Long id);
+    Word findById(Long id);
 
     void save(Word Word);
 }

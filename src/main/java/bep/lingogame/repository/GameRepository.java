@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface GameRepository extends Repository<Game, Long> {
     List<Game> findAll();
-    void findById(Long id);
+    Game findById(Long id);
     void save(Game game);
 }

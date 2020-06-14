@@ -19,8 +19,11 @@ public class PlayerService {
         return playerRepository.findAll();
     }
 
+    public Player findById(Long id){
+        return playerRepository.findById(id);
+    }
     public Player createNew(Player playerRestRequest) {
-        Player player = new Player(null, playerRestRequest.name, playerRestRequest.score, LocalDateTime.now());
+        Player player = new Player(null, playerRestRequest.name, 0, LocalDateTime.now());
 
         playerRepository.save(player);
         return player;

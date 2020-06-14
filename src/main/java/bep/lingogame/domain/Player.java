@@ -27,6 +27,11 @@ public class Player {
         this.score = score;
         this.createdAt = createdAt;
     }
+
+    public Long getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }
