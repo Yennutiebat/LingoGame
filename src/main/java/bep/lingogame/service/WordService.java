@@ -49,7 +49,7 @@ public class WordService {
         List<String> lingowords = textDeserializer.deserialize("src/main/resources/basiswoorden-aangepast.txt");
         List<String> checkedWords = loopTroughWords(lingowords);
         int rnd = new Random().nextInt(checkedWords.size());
-        randomWord = "baard";//checkedWords.get(rnd);
+        randomWord = checkedWords.get(rnd);
         System.out.println(randomWord+" random ");
         return randomWord;
     }
