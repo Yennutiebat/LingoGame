@@ -1,7 +1,6 @@
 package bep.lingogame.controller;
 
 
-import bep.lingogame.domain.Game;
 import bep.lingogame.domain.Turn;
 import bep.lingogame.service.TurnService;
 import bep.lingogame.service.WordService;
@@ -18,12 +17,13 @@ public class TurnController {
     private String correctGuessedChars;
     private String numberOfLines;
     private String guess;
-    private Game game = null;
+    PlayerController playerController;
 
 
-    public TurnController(TurnService turnService, WordService wordService) {
+    public TurnController(TurnService turnService, WordService wordService,PlayerController playerController) {
         this.turnService = turnService;
         this.wordService = wordService;
+        this.playerController = playerController;
 
     }
 
@@ -41,7 +41,7 @@ public class TurnController {
     @PostMapping(consumes = "application/json")
     public String guessWord(@RequestBody Turn turn) throws FileNotFoundException {
         guess =turnService.correctGuessedChars(turn,randomword,correctGuessedChars,numberOfLines); //String guess =turnService.correctGuessedChars(turn,randomword,correctGuessedChars,numberOfLines);
-        turnService.createNew(game);
+        turnService.createNew(playerController.newGame);
         return guess;
     }
 }

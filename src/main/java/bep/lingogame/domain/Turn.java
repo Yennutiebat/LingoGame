@@ -19,7 +19,7 @@ public class Turn{
     public int mistakes;
     public int score;
     @ManyToOne
-    private Game game;
+    public Game game;
     @CreationTimestamp
     public LocalDateTime createdAt;
 

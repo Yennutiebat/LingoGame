@@ -6,6 +6,7 @@ import bep.lingogame.domain.TotalFeedback;
 import bep.lingogame.domain.Turn;
 import bep.lingogame.repository.TurnRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
@@ -32,7 +33,7 @@ public class TurnService {
         return turnRepository.findAll();
     }
 
-    public Turn createNew(Game game) {
+    public Turn createNew(@RequestBody Game game ) {
         Turn turn = new Turn(null, randomword2,guessedWord,totalFeedback, mistakes,score, game, LocalDateTime.now());
         turnRepository.save(turn);
         return turn;
