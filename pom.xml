@@ -103,7 +103,7 @@
                 <version>1.5.0</version>
                 <configuration>
                     <timestampedReports>false</timestampedReports>
-                    <mutationThreshold>50</mutationThreshold>
+                    <mutationThreshold>0</mutationThreshold>
                     <excludedClasses>
                         <param>${start-class}</param>
                     </excludedClasses>
