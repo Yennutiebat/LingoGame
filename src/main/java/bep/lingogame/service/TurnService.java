@@ -40,6 +40,7 @@ public class TurnService {
     }
 
     public String correctGuessedChars(Turn turn,String randomword,String correctGuessedChars,String numberOfLines) throws FileNotFoundException {
+        guessedWord=turn.guessedWord;
         randomword2=randomword;
         if (mistakes < 5) {
             if (turn.guessedWord.equals(randomword)) {//als het in een keer goed is
@@ -47,7 +48,6 @@ public class TurnService {
                 correctGuessedChars = "";
                 System.out.println("goed geraden");
                 score+=100;
-                guessedWord="";
                 totalFeedback=totalFeedback.correct;
                 randomword = wordService.returnRandomWord();
                 String firstLetter = wordService.ReturnFirstChar(numberOfLines);
